@@ -27,7 +27,7 @@ FILES 		 :=  Simplification
 #The location of libst
 LIBST_ROOT :=  ../libst
 LIBST_DIR  :=  $(LIBST_ROOT)/lib
-LIBST_INC  :=  $(LIBST_ROOT)/included
+LIBST_INC  :=  $(LIBST_ROOT)/include
 
 #All the libs to include
 INCDIRS    := . $(LIBST_INC) include
@@ -42,7 +42,6 @@ ifeq ($(ARCH), Linux)
 # contain an extern "C" declaration.  We want the one in /usr/include
 #
 INCDIRS          += /usr/include ext/glew/include ext/freetype/include
-FILES            += STJoystick_linux
 endif
 
 #
@@ -53,7 +52,6 @@ endif
 # 
 ifeq ($(ARCH), Darwin)
 INCDIRS          += /sw/include /opt/local/include
-FILES            += STJoystick_darwin
 endif
 
 
@@ -61,6 +59,7 @@ OBJS             :=  $(addsuffix $(OBJSUFFIX), $(FILES))
 
 CFLAGS += $(addprefix -I, $(INCDIRS))
 CFLAGS += $(CFLAGS_PLATFORM)
+LDFLAGS = $(addprefix -L, $(LIBDIRS))
 
 #This library is called simp
 TARGET           :=  simp

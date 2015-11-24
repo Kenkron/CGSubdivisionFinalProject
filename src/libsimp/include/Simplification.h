@@ -12,8 +12,8 @@
 class Simplification{
 public:
 
-	QuadricErrorSimplification();
-	virtual ~QuadricErrorSimplification();
+	Simplification();
+	virtual ~Simplification();
 
 	/**Given a mesh ($(original)) and a maximum number of triangles ($(maxTriangles)),
 	 * this function will return a new mesh based off of the original mesh,
