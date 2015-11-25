@@ -5,6 +5,7 @@
 // and GLEW (to load OpenGL extensions)
 //
 #include "stglew.h"
+#include "Simplification.h"
 
 #include <stdio.h>
 #include <string.h>

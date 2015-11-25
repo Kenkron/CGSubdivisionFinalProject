@@ -70,14 +70,17 @@ endif
 
 LIBST      :=  st
 LIBST_ROOT :=  ../libst
-LIBSIMP_ROOT := ../libsimp
 LIBST_DIR  :=  $(LIBST_ROOT)/lib
-LIBST_INC  :=  $(LIBST_ROOT)/included
+LIBST_INC  :=  $(LIBST_ROOT)/include
+
+LIBSIMP_ROOT := ../libsimp
+LIBSIMP_DIR  :=  $(LIBSIMP_ROOT)/lib
+LIBSIMP_INC  :=  $(LIBSIMP_ROOT)/include
 
 TARGET     := $(addsuffix $(EXESUFFIX), $(TARGET))
 
-INCDIRS    := . $(LIBST_INC) $(EXTRA_INC_DIRS)
-LIBDIRS    := $(LIBST_DIR) $(EXTRA_LIB_DIRS)
+INCDIRS    := . $(LIBST_INC) $(LIBSIMP_INC) $(EXTRA_INC_DIRS)
+LIBDIRS    := $(LIBST_DIR) $(LIBSIMP_DIR) $(EXTRA_LIB_DIRS)
 
 CFLAGS     += $(addprefix -I, $(INCDIRS))
 LDFLAGS    += $(addprefix -L, $(LIBDIRS))
@@ -97,7 +100,7 @@ all: $(TARGET)
 $(LIBST_DIR)/libst.a:
 	(cd $(LIBST_ROOT); $(MAKE))
 
-$(TARGET): $(OBJS) $(LIBST_DIR)/libst.a
+$(TARGET): $(OBJS) $(LIBST_DIR)/libst.a $(LIBSIMP_DIR)/libsimp.a
 	$(LD) -o $(TARGET) $(OBJS) $(LDFLAGS) $(LDLIBS) $(LDFRAMEWORKS)
 
 
