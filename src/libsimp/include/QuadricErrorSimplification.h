@@ -16,7 +16,7 @@ struct Edge{
 }
   
 class QuadricErrorSimplification: public Simplification {
- public:
+ puoblic:
   QuadricErrorSimplification();
   virtual ~QuadricErrorSimplification();
   std::vector<STMatrix4*> qMatrixes;
