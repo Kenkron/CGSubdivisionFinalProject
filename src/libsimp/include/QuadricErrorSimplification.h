@@ -20,7 +20,7 @@ class QuadricErrorSimplification: public Simplification {
   QuadricErrorSimplification();
   virtual ~QuadricErrorSimplification();
   std::vector<STMatrix4*> qMatrixes;
-  std::priority_queue<Edge> edges;
+  std::priority_queue<Edge*> edges;
 
   /**Populates qMatrixes based on the planes surrounding each vertex
      in the mesh m*/
