@@ -29,7 +29,7 @@ class QuadricErrorSimplification: public Simplification {
   /**Finds the cost of contracting two vertices together based on the
      location of the new vertex (w), and the Q matrixes of the previous
 	 two vectors*/
-  float computeCost(STMesh* m, STVector3* w, STMatrix* Q1, STMatrix* Q2);
+  float computeCost(STMesh* m, STVector3* w, STMatrix4* Q1, STMatrix4* Q2);
   
   /**Fills `edges` with all of the edges in the provided mesh, computes their
    cost (with computeCost), then sorts them.*/
