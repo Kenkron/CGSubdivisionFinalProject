@@ -20,8 +20,8 @@ Simplification::~Simplification() {
 
 }
 
-STTriangleMesh Simplification::simplify(STTriangleMesh* original,
+STTriangleMesh* Simplification::simplify(STTriangleMesh* original,
 		int maxPolygons) {
 	//TODO: implement a basic simplification algorithm
-	return STTriangleMesh(*original);
+	return new STTriangleMesh(*original);
 }

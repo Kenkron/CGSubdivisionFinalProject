@@ -8,6 +8,8 @@
 #ifndef SRC_MAINSRC_SIMPLIFICATION_H_
 #define SRC_MAINSRC_SIMPLIFICATION_H_
 
+#include "STTriangleMesh.h"
+
 /**Defines a method to simplify a complex mesh.*/
 class Simplification{
 public:
@@ -19,6 +21,6 @@ public:
 	 * this function will return a new mesh based off of the original mesh,
 	 * but containing no more than $(maxTriangles) triangles.  $(original) will not
 	 * be changed.*/
-	virtual STTriangleMesh simplify(STTriangleMesh* original, int maxTriangles);
+	virtual STTriangleMesh* simplify(STTriangleMesh* original, int maxTriangles);
 };
 #endif /* SRC_MAINSRC_SIMPLIFICATION_H_ */
