@@ -20,7 +20,7 @@ LDFLAGS		 :=
 .PHONY : clean release mkdirs
 
 
-FILES 		 :=  Simplification
+FILES 		 :=  Simplification QuadricErrorSimplification
 
 #used to be: INCDIRS          := . include
 
