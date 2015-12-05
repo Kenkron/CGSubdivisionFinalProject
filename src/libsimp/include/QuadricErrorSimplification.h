@@ -14,9 +14,11 @@
 #include "STVector3.h"
 
 struct Edge{
-  Edge(int v1,int v2){
+  Edge(STVector3* v1,STVector3* v2){
+    vertex1=v1;
+    vertex2=v2;
   }
-  int vertex1, vertex2;  
+  STVector3* vertex1, vertex2;  
   float cost;
 }
   
@@ -44,7 +46,7 @@ class QuadricErrorSimplification: public Simplification {
      This function should also update the mVertices, mNormals, mTexPos, and mFaces
      inside of m.  It must also modify the Q matrixes vector, as well as the indices
      of edges.*/
-  void contractEdge(STTriangleMesh* m, int vertex1, int vertex2);
+  void contractEdge(STTriangleMesh* m, STVector3 vertex1, STVector3 vertex2);
   
 };
 
