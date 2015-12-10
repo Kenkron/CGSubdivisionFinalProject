@@ -25,6 +25,9 @@ struct Edge{
   friend bool operator<(const Edge& a, const Edge& b) {
     return a.cost<b.cost;
   }
+  friend bool operator<(const Edge *a, const Edge *b) {
+    return a->cost<b->cost;
+  }
   STVertex* vertex1;
   STVertex* vertex2;  
   float cost;
@@ -38,7 +41,7 @@ class QuadricErrorSimplification: public Simplification {
   /**Stores the Q matrix for each of the vectors in the STTriangleMesh
    * The Q matrix at qMatrixes[i] should corrospond to mVertices[i]*/
   std::vector<STMatrix4*> qMatrixes;
-  std::vector<Edge> edges;
+  std::vector<Edge*> edges;
 
   /**Populates qMatrixes based on the planes surrounding each vertex
      in the mesh m*/
@@ -57,8 +60,10 @@ class QuadricErrorSimplification: public Simplification {
      This function should also update the mVertices, mNormals, mTexPos, and mFaces
      inside of m.  It must also modify the Q matrixes vector, as well as the indices
      of edges.*/
-  void contractEdge(STTriangleMesh* m, Edge e);
+  void contractEdge(STTriangleMesh* m, Edge* e);
   
+  /**Simplifies a mesh to have at most maxTriangles.*/
+  virtual STTriangleMesh* simplify(STTriangleMesh* original, int maxTriangles);
 };
 
 #endif /* SRC_LIBSIMP_QUADRICERRORSIMPLIFICATION_H_ */

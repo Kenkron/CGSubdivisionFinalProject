@@ -37,6 +37,7 @@ struct STPoint3
 
     static STPoint3 Max(const STPoint3& p1, const STPoint3& p2);
     static STPoint3 Min(const STPoint3& p1, const STPoint3& p2);
+  inline bool operator==(const STVector3&);
 };
 
 inline STPoint3 operator+(const STPoint3& left, const STVector3& right);

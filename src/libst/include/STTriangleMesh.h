@@ -24,10 +24,8 @@ struct STVertex{
     STPoint3 pt;
     STVector3 normal;
     STPoint2 texPos;
-    STFace *f;
-	STFace faces;
-	STEdge edges;
-	float QMatrix[3][3];
+    STEdge *edges;
+    float QMatrix[3][3];
 };
 inline std::ostream& operator <<(std::ostream& stream, const STVertex& v);
 
@@ -63,12 +61,8 @@ struct STEdge{
 	STEdge(STVertex* v0, STVertex* v1){
 		v[0] = v0;
 		v[1] = v1;
-		texPos[0] = &(v0->texPos);
-		texPos[1] = &(v1->texPos);
 	}
-	STFace faces;
 	STVertex *v[2];
-	
 };
 inline std::ostream& operator <<(std::ostream& stream, const STEdge& e);
 
