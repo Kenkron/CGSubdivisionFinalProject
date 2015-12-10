@@ -3,7 +3,7 @@
 #define __STPOINT3_INL__
 
 #include "STVector3.h"
-
+#include<algorithm>
 /**
 * Inline file for STPoint3.h
 */
@@ -43,6 +43,14 @@ inline STPoint3& STPoint3::operator-=(const STVector3& right)
     y -= right.y;
     z -= right.z;
     return *this;
+}
+
+inline bool STPoint3::operator==(const STVector3& right)
+{
+	if (x == right.x && y == right.y && z == right.z)
+		return true;
+	else
+		return false;
 }
 
 /**

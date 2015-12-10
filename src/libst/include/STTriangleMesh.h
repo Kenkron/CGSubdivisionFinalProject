@@ -10,7 +10,7 @@
 #include <iostream>
 
 struct STFace;
-
+struct STEdge;
 struct STVertex{
     STVertex(float x, float y, float z, float u=0, float v=0){
         pt=STPoint3(x,y,z);
@@ -25,6 +25,9 @@ struct STVertex{
     STVector3 normal;
     STPoint2 texPos;
     STFace *f;
+	STFace faces;
+	STEdge edges;
+	float QMatrix[3][3];
 };
 inline std::ostream& operator <<(std::ostream& stream, const STVertex& v);
 
@@ -55,6 +58,21 @@ struct STFace{
     STPoint2 *texPos[3];
 };
 inline std::ostream& operator <<(std::ostream& stream, const STFace& f);
+
+struct STEdge{
+	STEdge(STVertex* v0, STVertex* v1){
+		v[0] = v0;
+		v[1] = v1;
+		texPos[0] = &(v0->texPos);
+		texPos[1] = &(v1->texPos);
+	}
+	STFace faces;
+	STVertex *v[2];
+	
+};
+inline std::ostream& operator <<(std::ostream& stream, const STEdge& e);
+
+
 
 /**
 * STTriangleMesh use a simple data structure to represent a triangle mesh.
@@ -90,6 +108,8 @@ public:
     unsigned int AddVertex(float x, float y, float z, float u=0, float v=0);
 
     unsigned int AddVertex(const STPoint3& pt, const STPoint2& texPos=STPoint2(0, 0));
+
+	unsigned int AddEdge(unsigned int id0, unsigned int id1);
 
     unsigned int AddFace(unsigned int id0,unsigned int id1,unsigned int id2);
     
