@@ -19,6 +19,43 @@ QuadricErrorSimplification::~QuadricErrorSimplification() {
 	// TODO Auto-generated destructor stub
 }
 
+/**Helper function: are two vertexes the same?*/
+bool vertexEquals(STVertex* a, STVertex* b){
+  return a->pt.x==b->pt.x && a->pt.y == b->pt.y && a->pt.z == b->pt.z;
+}
+
+/**Helper function: do two edges describing the same thing?
+ * (cost is not considered, nor is the order of a and b)*/
+bool edgeEquals(Edge* a, Edge* b){
+  return (vertexEquals(a->vertex1,b->vertex1) && vertexEquals(a->vertex2,b->vertex2))||
+    (vertexEquals(a->vertex1,b->vertex2) && vertexEquals(a->vertex2,b->vertex1));
+}
+/*Helper Function: where is the vertex in 'vertiexes'?
+returns -1 if this vertex is not found
+*/
+int findVertex(STTriangleMesh* mesh, STVertex* a){
+	int i;
+	for (i = 0; i<mesh->mVertices.size(); i++){
+		STVertex* b = mesh->mVertices[i];
+		if (a->pt.x==b->pt.x && a->pt.y==b->pt.y && a->pt.z==b->pt.z){
+			return i;
+		}
+	}
+	return -1;
+}
+
+/**Helper function: where is this edge in `edges`?
+ * returns -1 if this edge is not found*/
+int findEdge(QuadricErrorSimplification* me, Edge* a){
+  int i;
+  for (i=0;i<me->edges.size();i++){
+    if (edgeEquals(a,me->edges[i])){
+      return i;
+    }
+  }
+  return -1;
+}
+
 /**Populates qMatrixes based on the planes surrounding each vertex
    in the mesh m - Ankit*/
 void QuadricErrorSimplification::generateQMatrices(STTriangleMesh* mesh){
@@ -136,48 +173,6 @@ void QuadricErrorSimplification::generateQMatrices(STTriangleMesh* mesh){
 	}
 }
 
-bool ManifoldConstraint(STTriangleMesh* mesh, STPoint3 v1, STPoint3 v2) const
-{
-	std::set<STPoint3> vertices;
-	STPoint3 a, b;
-	int a1 = findVertex(mesh, v1);
-	int a2 = findVertex(mesh, v2);
-	int idEdge1;
-	int idEdge2;
-	int idEdgeV1V2;
-	for (size_t itE1 = 0; itE1 < mesh.mVertices[a1].edges.size(); ++itE1)
-	{
-		//idEdge1 = m_vertices[v1].m_edges[itE1];
-		a = (mesh.mVertices[a1].edges[itE1].v[0] == v1) ? mesh.mVertices[a1].edges[itE1].v[1] : mesh.mVertices[a1].edges[itE1].v[0];
-		vertices.insert(a);
-		if (a != v2)
-		{
-			for (size_t itE2 = 0; itE2 < mesh.mVertices[a2].edges.size(); ++itE2)
-			{
-				idEdge2 = mesh.mVertices[a2].edges[itE2];
-				b = (m_edges[idEdge2].m_v1 == v2) ? m_edges[idEdge2].m_v2 : m_edges[idEdge2].m_v1;
-				vertices.insert(b);
-				if (a == b)
-				{
-					if (GetTriangle(v1, v2, a) == -1)
-					{
-						return false;
-					}
-				}
-			}
-		}
-		else
-		{
-			idEdgeV1V2 = idEdge1;
-		}
-	}
-	if (vertices.size() <= 4 || (m_vertices[v1].m_onBoundary && m_vertices[v2].m_onBoundary && !m_edges[idEdgeV1V2].m_onBoundary))
-	{
-		return false;
-	}
-	return true;
-}
-
 /**Finds the cost of contracting two vertices together based on the
    location of the new vertex (w), and the Q matrixes of the previous
    two vectors -Nisarg*/
@@ -244,45 +239,6 @@ float QuadricErrorSimplification::computeCost(STTriangleMesh* m, STVertex* a, ST
     (sum_Q[0][3] * w->pt.x + sum_Q[1][3] * w->pt.y + sum_Q[2][3] * w->pt.z + Q15) ;
 
   return qem;
-}
-
-/**Helper function: are two vertexes the same?*/
-bool vertexEquals(STVertex* a, STVertex* b){
-  return a->pt.x==b->pt.x && a->pt.y == b->pt.y && a->pt.z == b->pt.z;
-}
-
-/**Helper function: do two edges describing the same thing?
- * (cost is not considered, nor is the order of a and b)*/
-bool edgeEquals(Edge* a, Edge* b){
-  return (vertexEquals(a->vertex1,b->vertex1) && vertexEquals(a->vertex2,b->vertex2))||
-    (vertexEquals(a->vertex1,b->vertex2) && vertexEquals(a->vertex2,b->vertex1));
-}
-/*Helper Function: where is the vertex in 'vertiexes'?
-returns -1 if this vertex is not found
-*/
-int findVertex(STTriangleMesh* mesh, STVertex* a){
-	int i;
-	for (i = 0; i<mesh->mVertices.size(); i++){
-		STVertex* b = mesh->mVertices[i];
-		if (a->pt.x==b->pt.x && a->pt.y==b->pt.y && a->pt.z==b->pt.z){
-			return i;
-		}
-	}
-	return -1;
-}
-
-
-
-/**Helper function: where is this edge in `edges`?
- * returns -1 if this edge is not found*/
-int findEdge(QuadricErrorSimplification* me, Edge* a){
-  int i;
-  for (i=0;i<me->edges.size();i++){
-    if (edgeEquals(a,me->edges[i])){
-      return i;
-    }
-  }
-  return -1;
 }
 
 /**Fills `edges` with all of the edges in the provided mesh, computes their
