@@ -25,9 +25,6 @@ struct Edge{
   friend bool operator<(const Edge& a, const Edge& b) {
     return a.cost<b.cost;
   }
-  friend bool operator<(const Edge *a, const Edge *b) {
-    return a->cost<b->cost;
-  }
   STVertex* vertex1;
   STVertex* vertex2;  
   float cost;

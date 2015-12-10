@@ -11,7 +11,7 @@
 #include <stdio.h>
 
 QuadricErrorSimplification::QuadricErrorSimplification() {
-        // TODO Auto-generated constructor stub
+         // TODO Auto-generated constructor stub
 
 }
 
@@ -57,33 +57,16 @@ int findEdge(QuadricErrorSimplification* me, Edge* a){
 }
 
 STVector3 vertex2Vector3(STVertex* v){
-  return (STVector3(v->pt.x,v->pt.y,v->pt.z))l
+  return (STVector3(v->pt.x,v->pt.y,v->pt.z));
 }
 
 /**Populates qMatrixes based on the planes surrounding each vertex
    in the mesh m - Ankit*/
 void QuadricErrorSimplification::generateQMatrices(STTriangleMesh* mesh){
-
-        STVertex* coordMin = mesh->mVertices[0];
-	STVertex* coordMax = mesh->mVertices[0];
-	STVertex* coord;
-	for (size_t p = 1; p < mesh->mVertices.size(); ++p)
-	{
-		coord = mesh->mVertices[p];
-		if (coordMin->pt.x > coord->pt.x) coordMin->pt.x = coord->pt.x;
-		if (coordMin->pt.y > coord->pt.y) coordMin->pt.y = coord->pt.y;
-		if (coordMin->pt.z > coord->pt.z) coordMin->pt.z = coord->pt.z;
-		if (coordMax->pt.x < coord->pt.x) coordMax->pt.x = coord->pt.x;
-		if (coordMax->pt.y < coord->pt.y) coordMax->pt.y = coord->pt.y;
-		if (coordMax->pt.z < coord->pt.z) coordMax->pt.z = coord->pt.z;
-	}
-	coordMax -= coordMin;
-	m_diagBB = coordMax.GetNorm();
-
 	STVector3 i, j, k;
 	STVector3 n;
-	Float d = 0;
-	Float area = 0;
+	float d = 0;
+	float area = 0;
 	STFace* f;
 	STVertex* vert;
 	for (size_t v = 0; v < mesh->mVertices.size(); ++v)
@@ -95,14 +78,13 @@ void QuadricErrorSimplification::generateQMatrices(STTriangleMesh* mesh){
 		{
 		        f = mesh->mFaces[itT];
 			if (vertexEquals(f->v[0], vert) || vertexEquals(f->v[1], vert) || vertexEquals(f->v[2], vert)){
-			  idTriangle = mesh->mVertices[v].faces[itT];
-			  i = vertex2Vector3(mesh->mVertices[v].faces[itT].v[0]);
-			  j = vertex2Vector3(mesh->mVertices[v].faces[itT].v[1]);
-			  k = vertex2Vector3(mesh->mVertices[v].faces[itT].v[2]);
+			  i = vertex2Vector3(f->v[0]);
+			  j = vertex2Vector3(f->v[1]);
+			  k = vertex2Vector3(f->v[2]);
 			  n = STVector3::Cross(j - i, k - i);
 			  area = n.Length();
 			  n.Normalize();
-			  d = -(mesh->mVertices[v] * n);
+			  d = -(STVector3::Dot(vertex2Vector3(mesh->mVertices[v]), n));
 			  
 			  qMatrixes[v]->table[0][0] += area * (n.x * n.x);
 			  qMatrixes[v]->table[0][1] += area * (n.x * n.y);
