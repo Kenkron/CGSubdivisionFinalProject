@@ -11,7 +11,7 @@
 #include <stdio.h>
 
 QuadricErrorSimplification::QuadricErrorSimplification() {
-	// TODO Auto-generated constructor stub
+        // TODO Auto-generated constructor stub
 
 }
 
@@ -56,22 +56,26 @@ int findEdge(QuadricErrorSimplification* me, Edge* a){
   return -1;
 }
 
+STVector3 vertex2Vector3(STVertex* v){
+  return (STVector3(v->pt.x,v->pt.y,v->pt.z))l
+}
+
 /**Populates qMatrixes based on the planes surrounding each vertex
    in the mesh m - Ankit*/
 void QuadricErrorSimplification::generateQMatrices(STTriangleMesh* mesh){
 
-	STVertex coordMin = mesh->mVertices[0];
-	STVertex coordMax = mesh->mVertices[0];
-	STVertex coord;
-	for (size_t p = 1; p < mesh.mVertices.size(); ++p)
+        STVertex* coordMin = mesh->mVertices[0];
+	STVertex* coordMax = mesh->mVertices[0];
+	STVertex* coord;
+	for (size_t p = 1; p < mesh->mVertices.size(); ++p)
 	{
 		coord = mesh->mVertices[p];
-		if (coordMin.x > coord.x) coordMin.x = coord.x;
-		if (coordMin.y > coord.y) coordMin.y = coord.y;
-		if (coordMin.z > coord.z) coordMin.z = coord.z;
-		if (coordMax.x < coord.x) coordMax.x = coord.x;
-		if (coordMax.y < coord.y) coordMax.y = coord.y;
-		if (coordMax.z < coord.z) coordMax.z = coord.z;
+		if (coordMin->pt.x > coord->pt.x) coordMin->pt.x = coord->pt.x;
+		if (coordMin->pt.y > coord->pt.y) coordMin->pt.y = coord->pt.y;
+		if (coordMin->pt.z > coord->pt.z) coordMin->pt.z = coord->pt.z;
+		if (coordMax->pt.x < coord->pt.x) coordMax->pt.x = coord->pt.x;
+		if (coordMax->pt.y < coord->pt.y) coordMax->pt.y = coord->pt.y;
+		if (coordMax->pt.z < coord->pt.z) coordMax->pt.z = coord->pt.z;
 	}
 	coordMax -= coordMin;
 	m_diagBB = coordMax.GetNorm();
@@ -80,95 +84,43 @@ void QuadricErrorSimplification::generateQMatrices(STTriangleMesh* mesh){
 	STVector3 n;
 	Float d = 0;
 	Float area = 0;
-	for (size_t v = 0; v < mesh.mVertices.size(); ++v)
+	STFace* f;
+	STVertex* vert;
+	for (size_t v = 0; v < mesh->mVertices.size(); ++v)
 	{
-	//	memset(m_vertices[v].m_Q, 0, 10 * sizeof(Float));
-		
-		for (size_t itT = 0; itT < mesh.mVertices[v].faces.size(); ++itT)
+	        //memset(m_vertices[v].m_Q, 0, 10 * sizeof(Float));
+	        vert = mesh->mVertices[v];
+		//find all the faces that contain this vertex
+		for (size_t itT = 0; itT < mesh->mFaces.size(); ++itT)
 		{
-			idTriangle = mesh.mVertices[v].faces[itT];
-			i = mesh.mVertices[v].faces[itT].v[0];
-			j = mesh.mVertices[v].faces[itT].v[1];
-			k = mesh.mVertices[v].faces[itT].v[2];
-			n = (j - i) ^ (k - i);
-			area = n.Length();
-			n.Normalize();
-			d = -(mesh.mVertices[v] * n);
-
-			mesh.mVertices[v].QMatrix[0][0] += area * (n.x * n.x);
-			mesh.mVertices[v].QMatrix[0][1] += area * (n.x * n.y);
-			mesh.mVertices[v].QMatrix[0][2] += area * (n.x * n.z);
-			mesh.mVertices[v].QMatrix[0][3] += area * (n.x * d);
-			mesh.mVertices[v].QMatrix[1][0] += area * (n.y * n.x);
-			mesh.mVertices[v].QMatrix[1][1] += area * (n.y * n.y);
-			mesh.mVertices[v].QMatrix[1][2] += area * (n.y * n.z);
-			mesh.mVertices[v].QMatrix[1][3] += area * (n.y * d);
-			mesh.mVertices[v].QMatrix[2][0] += area * (n.z * n.x);
-			mesh.mVertices[v].QMatrix[2][1] += area * (n.z * n.y);
-			mesh.mVertices[v].QMatrix[2][2] += area * (n.z * n.z);
-			mesh.mVertices[v].QMatrix[2][3] += area * (n.z * d);
-			mesh.mVertices[v].QMatrix[3][0] += area * (d * n.x);
-			mesh.mVertices[v].QMatrix[3][1] += area * (d * n.y);
-			mesh.mVertices[v].QMatrix[3][2] += area * (d * n.z);
-			mesh.mVertices[v].QMatrix[3][3] += area * (d * d);
-			
-		}
-	}
-	STVector3 u1, u2;
-	const Float w = static_cast<Float>(1000);
-	int t, v1, v2, v3;
-	for (size_t e = 0; e < mesh.mEdges.size(); ++e)
-	{
-		v1 = mesh.mEdges[e].v[0];
-		v2 = mesh.mEdges[e].v[1];
-		t = IsBoundaryEdge(v1, v2);
-		if (t != -1)
-		{
-			if (mesh.mFaces[t].v[0] != v1 && mesh.mFaces[t].v[0] != v2) v3 = mesh.mFaces[t].v[0];
-			else if (mesh.mFaces[t].v[1] != v1 && mesh.mFaces[t].v[1] != v2) v3 = mesh.mFaces[t].v[1];
-			else                                                           v3 = mesh.mFaces[t].v[2];
-			u1 = mesh.mVertices[v2] - mesh.mVertices[v1];
-			u2 = mesh.mVertices[v3] - mesh.mVertices[v1];
-			area = w * (u1^u2).GetNorm();
-			u1.Normalize();
-			n = u2 - (u2 * u1) * u1;
-			n.Normalize();
-
-			d = -(mesh.mVertices[v1] * n);
-			mesh.mVertices[v].QMatrix[0][0] += area * (n.x * n.x);
-			mesh.mVertices[v].QMatrix[0][1] += area * (n.x * n.y);
-			mesh.mVertices[v].QMatrix[0][2] += area * (n.x * n.z);
-			mesh.mVertices[v].QMatrix[0][3] += area * (n.x * d);
-			mesh.mVertices[v].QMatrix[1][0] += area * (n.y * n.x);
-			mesh.mVertices[v].QMatrix[1][1] += area * (n.y * n.y);
-			mesh.mVertices[v].QMatrix[1][2] += area * (n.y * n.z);
-			mesh.mVertices[v].QMatrix[1][3] += area * (n.y * d);
-			mesh.mVertices[v].QMatrix[2][0] += area * (n.z * n.x);
-			mesh.mVertices[v].QMatrix[2][1] += area * (n.z * n.y);
-			mesh.mVertices[v].QMatrix[2][2] += area * (n.z * n.z);
-			mesh.mVertices[v].QMatrix[2][3] += area * (n.z * d);
-			mesh.mVertices[v].QMatrix[3][0] += area * (d * n.x);
-			mesh.mVertices[v].QMatrix[3][1] += area * (d * n.y);
-			mesh.mVertices[v].QMatrix[3][2] += area * (d * n.z);
-			mesh.mVertices[v].QMatrix[3][3] += area * (d * d);
-
-			d = -(m_points[v2] * n);
-			mesh.mVertices[v].QMatrix[0][0] += area * (n.x * n.x);
-			mesh.mVertices[v].QMatrix[0][1] += area * (n.x * n.y);
-			mesh.mVertices[v].QMatrix[0][2] += area * (n.x * n.z);
-			mesh.mVertices[v].QMatrix[0][3] += area * (n.x * d);
-			mesh.mVertices[v].QMatrix[1][0] += area * (n.y * n.x);
-			mesh.mVertices[v].QMatrix[1][1] += area * (n.y * n.y);
-			mesh.mVertices[v].QMatrix[1][2] += area * (n.y * n.z);
-			mesh.mVertices[v].QMatrix[1][3] += area * (n.y * d);
-			mesh.mVertices[v].QMatrix[2][0] += area * (n.z * n.x);
-			mesh.mVertices[v].QMatrix[2][1] += area * (n.z * n.y);
-			mesh.mVertices[v].QMatrix[2][2] += area * (n.z * n.z);
-			mesh.mVertices[v].QMatrix[2][3] += area * (n.z * d);
-			mesh.mVertices[v].QMatrix[3][0] += area * (d * n.x);
-			mesh.mVertices[v].QMatrix[3][1] += area * (d * n.y);
-			mesh.mVertices[v].QMatrix[3][2] += area * (d * n.z);
-			mesh.mVertices[v].QMatrix[3][3] += area * (d * d);
+		        f = mesh->mFaces[itT];
+			if (vertexEquals(f->v[0], vert) || vertexEquals(f->v[1], vert) || vertexEquals(f->v[2], vert)){
+			  idTriangle = mesh->mVertices[v].faces[itT];
+			  i = vertex2Vector3(mesh->mVertices[v].faces[itT].v[0]);
+			  j = vertex2Vector3(mesh->mVertices[v].faces[itT].v[1]);
+			  k = vertex2Vector3(mesh->mVertices[v].faces[itT].v[2]);
+			  n = STVector3::Cross(j - i, k - i);
+			  area = n.Length();
+			  n.Normalize();
+			  d = -(mesh->mVertices[v] * n);
+			  
+			  qMatrixes[v]->table[0][0] += area * (n.x * n.x);
+			  qMatrixes[v]->table[0][1] += area * (n.x * n.y);
+			  qMatrixes[v]->table[0][2] += area * (n.x * n.z);
+			  qMatrixes[v]->table[0][3] += area * (n.x * d);
+			  qMatrixes[v]->table[1][0] += area * (n.y * n.x);
+			  qMatrixes[v]->table[1][1] += area * (n.y * n.y);
+			  qMatrixes[v]->table[1][2] += area * (n.y * n.z);
+			  qMatrixes[v]->table[1][3] += area * (n.y * d);
+			  qMatrixes[v]->table[2][0] += area * (n.z * n.x);
+			  qMatrixes[v]->table[2][1] += area * (n.z * n.y);
+			  qMatrixes[v]->table[2][2] += area * (n.z * n.z);
+			  qMatrixes[v]->table[2][3] += area * (n.z * d);
+			  qMatrixes[v]->table[3][0] += area * (d * n.x);
+			  qMatrixes[v]->table[3][1] += area * (d * n.y);
+			  qMatrixes[v]->table[3][2] += area * (d * n.z);
+			  qMatrixes[v]->table[3][3] += area * (d * d);
+			}
 		}
 	}
 }
@@ -302,6 +254,11 @@ void QuadricErrorSimplification::contractEdge(STTriangleMesh* m, Edge* e){
   for(int itr=0; itr != m->mFaces.size(); ++itr)
     {
       int vertexesReplaced = 0;
+      if(vertexEquals(m->mFaces[itr]->v[0],a) ||  vertexEquals(m->mFaces[itr]->v[0],b))
+	{
+	  m->mFaces[itr]->v[0] = w;
+	  vertexesReplaced++;
+	}
       if(vertexEquals(m->mFaces[itr]->v[1],a) ||  vertexEquals(m->mFaces[itr]->v[1],b))
 	{
 	  m->mFaces[itr]->v[1] = w;
@@ -310,11 +267,6 @@ void QuadricErrorSimplification::contractEdge(STTriangleMesh* m, Edge* e){
       if(vertexEquals(m->mFaces[itr]->v[2],a) ||  vertexEquals(m->mFaces[itr]->v[2],b))
 	{
 	  m->mFaces[itr]->v[2] = w;
-	  vertexesReplaced++;
-	}
-      if(vertexEquals(m->mFaces[itr]->v[3],a) ||  vertexEquals(m->mFaces[itr]->v[3],b))
-	{
-	  m->mFaces[itr]->v[3] = w;
 	  vertexesReplaced++;
 	}
       //if a face needed to chance 2 points, that face has been eliminated
