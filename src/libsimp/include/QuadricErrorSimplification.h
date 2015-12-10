@@ -47,7 +47,7 @@ class QuadricErrorSimplification: public Simplification {
   /**Finds the cost of contracting two vertices together based on the
      location of the new vertex (w), and the Q matrixes of the previous
 	 two vectors*/
-  float computeCost(STTriangleMesh* m, STVector3* w, STMatrix4* Q1, STMatrix4* Q2);
+  float computeCost(STTriangleMesh* m, STVertex* a, STVertex* b, STVertex* w, STMatrix4* Q1, STMatrix4* Q2);
   
   /**Fills `edges` with all of the edges in the provided mesh, computes their
    cost (with computeCost), then sorts them.*/
@@ -57,7 +57,7 @@ class QuadricErrorSimplification: public Simplification {
      This function should also update the mVertices, mNormals, mTexPos, and mFaces
      inside of m.  It must also modify the Q matrixes vector, as well as the indices
      of edges.*/
-  void contractEdge(STTriangleMesh* m, STVertex vertex1, STVertex vertex2);
+  void contractEdge(STTriangleMesh* m, Edge e);
   
 };
 
