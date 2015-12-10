@@ -6,6 +6,7 @@
 //
 #include "stglew.h"
 #include "Simplification.h"
+#include "QuadricErrorSimplification.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -171,6 +172,8 @@ void Setup() {
 	glEnable(GL_DEPTH_TEST);
 
 	STTriangleMesh::LoadObj(gTriangleMeshes, meshOBJ);
+	QuadricErrorSimplification simp = QuadricErrorSimplification();
+	simp.simplify(gTriangleMeshes[0],1000);
 	gMassCenter = STTriangleMesh::GetMassCenter(gTriangleMeshes);
 	std::cout << "Mass Center: " << gMassCenter << std::endl;
 	gBoundingBox = STTriangleMesh::GetBoundingBox(gTriangleMeshes);
@@ -397,8 +400,11 @@ void KeyCallback(unsigned char key, int x, int y) {
 		smooth = !smooth;
 		break;
 	case 'w':
-		for (unsigned int id = 0; id < gTriangleMeshes.size(); id++)
-			gTriangleMeshes[id]->Write("output.obj");
+	    for (unsigned int id = 0; id < gTriangleMeshes.size(); id++){
+		    char buffer[64];
+		    sprintf(buffer, "output%d.obj",id);
+		    gTriangleMeshes[id]->Write(buffer);
+	    }
 		break;
 	case 'a':
 		for (unsigned int id = 0; id < gTriangleMeshes.size(); id++)
@@ -761,7 +767,7 @@ int main(int argc, char** argv) {
 // TO DO: Change this file name to change the .obj model that is loaded
 // Optional: read in the file name from the command line > proj1_mesh myfile.obj
 //--------------------------------------------------------------------------
-meshOBJ = std::string("../../data/meshes/cone.obj");
+meshOBJ = std::string("../../data/meshes/bunny.obj");
 
 vertexShader = std::string("kernels/default.vert");
 fragmentShader = std::string("kernels/phong.frag");

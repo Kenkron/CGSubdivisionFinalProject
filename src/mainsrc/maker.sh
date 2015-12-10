@@ -1,0 +1,1 @@
+g++ -o MeshSimplifier main.cpp QuadricErrorSimplification.cpp Simplification.cpp -L../libst/lib -L../libsimp/lib -L/usr/lib64 -L/usr/lib -Lglew/lib -I../libsimp/include -I../libst/include -lst -lpng -ljpeg -lglut -lGL -lGLU -lGLEW -ggdb

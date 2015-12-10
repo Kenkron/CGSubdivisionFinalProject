@@ -1,9 +1,9 @@
 
 # the name of the compiled binary
-TARGET  := prog1_mesh
+TARGET  := MeshSimplifier
 
 # list files to compile and link together
-FILES   := main
+FILES   := QuadricSimplify
 
 
 #################################################################
@@ -100,6 +100,9 @@ all: $(TARGET)
 $(LIBST_DIR)/libst.a:
 	(cd $(LIBST_ROOT); $(MAKE))
 
+$(LIBSIMP_DIR)/libsimp.a:
+	(cd $(LIBSIMP_ROOT); $(MAKE))
+
 $(TARGET): $(OBJS) $(LIBST_DIR)/libst.a $(LIBSIMP_DIR)/libsimp.a
 	$(LD) -o $(TARGET) $(OBJS) $(LDFLAGS) $(LDLIBS) $(LDFRAMEWORKS)
 
@@ -111,6 +114,7 @@ $(TARGET): $(OBJS) $(LIBST_DIR)/libst.a $(LIBSIMP_DIR)/libsimp.a
 clean:
 	rm -rf *$(OBJSUFFIX) $(TARGET) *~ .#* #*
 	(cd $(LIBST_ROOT); $(MAKE) clean)
+	(cd $(LIBSIMP_ROOT); $(MAKE) clean)
 
 release:
 	@make --no-print-directory RELEASE=1
