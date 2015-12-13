@@ -767,7 +767,7 @@ int main(int argc, char** argv) {
 // TO DO: Change this file name to change the .obj model that is loaded
 // Optional: read in the file name from the command line > proj1_mesh myfile.obj
 //--------------------------------------------------------------------------
-meshOBJ = std::string("../../data/meshes/bunny.obj");
+    meshOBJ = std::string("../../data/meshes/teapot3.obj");
 
 vertexShader = std::string("kernels/default.vert");
 fragmentShader = std::string("kernels/phong.frag");

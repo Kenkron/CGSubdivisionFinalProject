@@ -21,7 +21,7 @@ struct STMatrix4
     //
     // Local members
     //
-    float table[4][4];
+    double table[4][4];
 
     /*CS148 -- implement other member functions here as necessary*/
 

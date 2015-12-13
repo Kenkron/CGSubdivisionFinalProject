@@ -146,13 +146,15 @@ double QuadricErrorSimplification::computeCost(STTriangleMesh* m, STVertex* a, S
   sum_Q[2][1] = Q1->table[2][1] + Q2->table[2][1];   
   sum_Q[2][2] = Q1->table[2][2] + Q2->table[2][2];   
   sum_Q[2][3] = Q1->table[2][3] + Q2->table[2][3];  
-  float determinant =   sum_Q[0][0] * sum_Q[1][1] * sum_Q[2][1] 
+  double determinant =   sum_Q[0][0] * sum_Q[1][1] * sum_Q[2][2] 
      + sum_Q[0][1] * sum_Q[1][2] * sum_Q[2][0] 
      + sum_Q[0][2] * sum_Q[1][0] * sum_Q[2][1]   
      - sum_Q[0][0] * sum_Q[1][2] * sum_Q[2][1]  
      - sum_Q[0][1] * sum_Q[1][0] * sum_Q[2][2]
-    - sum_Q[0][2] * sum_Q[1][1] * sum_Q[2][0]; 
-  if(false && determinant != 0.0)
+    - sum_Q[0][2] * sum_Q[1][1] * sum_Q[2][0];
+  
+  STMatrix4 minor = STMatrix4();
+  if(determinant != 0.0)
     {
       w->pt.x = (1/determinant)*  (    sum_Q[0][1]*sum_Q[1][3]*sum_Q[2][2]
 				      + sum_Q[0][2]*sum_Q[1][1]*sum_Q[2][3] 
@@ -172,6 +174,7 @@ double QuadricErrorSimplification::computeCost(STTriangleMesh* m, STVertex* a, S
 				      - sum_Q[0][0]*sum_Q[1][1]*sum_Q[2][3] 
 				      - sum_Q[0][1]*sum_Q[1][3]*sum_Q[2][0]  
 				   - sum_Q[0][3]*sum_Q[1][0]*sum_Q[2][1]);
+      //printf("pt: %f,%f,%f,%f\n",w->pt.x, w->pt.y, w->pt.z,determinant);
       //w.x = static_cast<Float>(temp.x);
       //w.y = static_cast<Float>(temp.y);
       //w.z = static_cast<Float>(temp.z);
